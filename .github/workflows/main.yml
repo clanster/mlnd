@@ -1,0 +1,20 @@
+name: Copy Image to GHCR
+on:
+  workflow_dispatch: # Позволяет запустить процесс кнопкой
+
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull, Tag, and Push
+        run: |
+          docker pull dtunikov/mlnode-api:0.0.3
+          docker tag dtunikov/mlnode-api:0.0.3 ghcr.io/${{ github.repository_owner }}/mlnode-api:0.0.3
+          docker push ghcr.io/${{ github.repository_owner }}/mlnode-api:0.0.3
