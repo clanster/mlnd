@@ -19,8 +19,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.MY_TOKEN }}
+          username: clanster
+          password: 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
 
       - name: Pull and Push
         run: |
