@@ -1,6 +1,6 @@
 name: Copy Image to GHCR
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Позволяет запускать процесс вручную кнопкой Run workflow
 
 jobs:
   copy:
@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Maximize Disk Space
         run: |
-          # Удаление тяжелых предустановленных пакетов для освобождения ~20ГБ
+          # Очистка места на диске виртуальной машины GitHub
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/local/lib/android
           sudo rm -rf /opt/ghc
@@ -19,11 +19,17 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: clanster
-          password: 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
+          username: ${{ github.repository_owner }}
+          # Используем ваш секрет с именем 1234
+          password: ${{ secrets.1234 }} 
 
       - name: Pull and Push
         run: |
+          # Скачиваем оригинальный образ
           docker pull dtunikov/mlnode-api:0.0.3
+          
+          # Переименовываем его для вашего профиля
           docker tag dtunikov/mlnode-api:0.0.3 ghcr.io/${{ github.repository_owner }}/mlnode-api:0.0.3
+          
+          # Загружаем в ваш реестр GitHub Packages
           docker push ghcr.io/${{ github.repository_owner }}/mlnode-api:0.0.3
