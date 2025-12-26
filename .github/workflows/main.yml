@@ -1,25 +1,26 @@
-name: Copy Image to GHCR
+name: Copy Image
 on:
   workflow_dispatch:
 
 jobs:
   copy:
     runs-on: ubuntu-latest
+    permissions: # Даем права на запись пакетов прямо здесь
+      packages: write
+      contents: read
     steps:
       - name: Maximize Disk Space
         run: |
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/ghc
-          sudo rm -rf "/usr/local/share/boost"
           sudo docker image prune -a -f
 
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.MY_TOKEN }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }} # Это стандартный ключ, его НЕ НАДО создавать в настройках
 
       - name: Pull and Push
         run: |
