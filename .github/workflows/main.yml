@@ -21,7 +21,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           # Используем ваш секрет с именем 1234
-          password: ${{ secrets.1234 }} 
+          password: ${{ secrets['1234'] }}
 
       - name: Pull and Push
         run: |
